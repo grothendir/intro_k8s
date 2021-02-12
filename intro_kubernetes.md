@@ -52,9 +52,10 @@ Utile pour les développeurs et les testeurs, en formation ou pour découvrir de
 * Les hyperviseurs de type 1
 ![hyperviseur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiHyperviseur.png)
 C'est la solution adoptée en entreprise. L'hyperviseur de type 1 est un noyau système (Linux) très léger (juste avec une busybox) et optimisé pour gérer les accès des noyaux d'OS invités à l'architecture sous-jacente.
-Inconvénient: plus onéreux.
-**Exemples**: VMware ESXi/vSphere, Hyper-V, KVM, Xen, ...
 
+Inconvénient: plus onéreux.
+
+**Exemples**: VMware ESXi/vSphere, Hyper-V, KVM, Xen, ...
 
 ### 1.3 Orchestration des conteneurs
 La gestion d'un petit nombre de conteneurs (pour les développeurs et les testeurs) n'a pas besoin d'un orchestrateur, mais dès qu'on passe dans des environnements de production il faut une Infrastructure As A Service comme K8s, ou Plateform As A Service (OpenShift, Rancher, ...).
