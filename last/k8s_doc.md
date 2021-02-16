@@ -35,6 +35,7 @@ Il y a différentes techniques de virtualisation mais qui peuvent être complém
 
 
 * Isolateurs(conteneurs)
+<img src="./Diagramme_ArchiIsolateur.png" width="70%" height="70%" />
 ![isolateur](./Diagramme_ArchiIsolateur.png)
 Avantages des conteneurs:
 
@@ -51,13 +52,14 @@ Cependant, on ne peut pas vraiment parler de virtualisation de système d'exploi
 La principale différence entre un conteneur et une machine virtuelle est que le conteneur **utilise le noyau de l'hôte**, ils sont donc très légers et très faciles  et rapides à déployer/détruire/redéployer.
 
 * Les hyperviseurs de type 2
-<img src="./Diagramme_ArchiEmulateur.png" width="80%" height="80%" />
+<img src="./Diagramme_ArchiEmulateur.png" width="70%" height="70%" />
 ![emulateur](./Diagramme_ArchiEmulateur.png =200x)
 Utile pour les développeurs et les testeurs, en formation ou pour découvrir de nouveaux OS. Cette solution isole bien les OS invités mais les performances sont bien moindres que dans le cas des hyperviseurs de type 1, car dans le type 2, l'hyperviseur est un programme lourd qui tourne sur l'OS de l'hôte.
 
 **Exemples**: VMware Fusion/Workstation, VirtualBox, QEMU, ...
 
 * Les hyperviseurs de type 1
+<img src="./Diagramme_ArchiHyperviseur.png" width="70%" height="70%" />
 ![hyperviseur](./Diagramme_ArchiHyperviseur.png)
 C'est la solution adoptée en entreprise. L'hyperviseur de type 1 est un noyau système (Linux) très léger (juste avec une busybox) et optimisé pour gérer les accès des noyaux d'OS invités à l'architecture sous-jacente.
 Inconvénient: plus onéreux.
