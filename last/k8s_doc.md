@@ -42,10 +42,6 @@ une très forte densité: on peut déployer beaucoup plus de conteneurs que de m
 
 performances: très peu d'overhead (temps passé par le système à ne rien faire d'autre que de se gérer lui-même).
 empreinte réduite:  un conteneur est vraiment comme une *enveloppe* autour de l'application. Par exemple une application de test hello-world de taille 1,8Mio peut être packagée dans un conteneur de taille 1,9Mio!
-démo:
-```shell
-admin@ubuntu:~$
-```
 
 Outre la densité et les performances pendant l'utilisation, on améliore le temps de *cold start*, et, plus important encore on réduit la surface d'attaque au strict minimum (il y a moins de vulénrabilités potentielles dans un binaire que dans un Linux, même un Linux minimaliste).
 
@@ -203,7 +199,7 @@ NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
 kubernetes-bootcamp   1/1     1            1           38s
 $ 
 ```
-ON va exécuter la commande ```shell kubectl proxy``` dans un autre terminal et laisser la commande tourner.
+ON va exécuter la commande ```kubectl proxy``` dans un autre terminal et laisser la commande tourner.
 ```shell
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; 
 kubectl proxy
