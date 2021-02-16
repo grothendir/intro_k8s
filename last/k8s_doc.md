@@ -1,5 +1,5 @@
-**Warning: ce qui est écrit en italique est ma propre interprétation, ce n'est peut-être pas toujours exact.**
 # Introduction à Kubernetes
+**Warning: ce qui est écrit en italique est ma propre interprétation, ce n'est peut-être pas toujours exact.**
 ## 1. Concepts
 ### 1.1 Applications monolithiques et microservices
 ### 1.2 Les conteneurs
@@ -7,16 +7,20 @@
 ##  2   Architecture
 ### 2.1 Architecture de Kubernetes
 ![kubernetes](./Kubernetes.png)
-### 2.2 Les différents types d'installation du cluster
+### 2.2 Pods et Nodes
 ##  3   Utilisation
 ### 3.1 Les différents types d'installation du cluster
 #### 3.1.1 Bare metal
-#### 3.1.2 Bare metal
-#### 3.1.3 Bare metal
+#### 3.1.2 Dans un environnement Cloud
+#### 3.1.3 Minikube
 ## 3.2 Les blocs de base de K8s (nodes, pods, label, services, volumes, namespaces, ...)
 #### 3.3 Gestion du cluster Kubernetes
-#### 3.3.1 L'environnement minikube
-
+#### 3.3.1 L'environnement local minikube
+#### 3.3.2  deployer une application
+#### 3.3.3   Explorer une application
+#### 3.3.4  Utiliser les services pour exposer son application
+#### 3.3.5  Mettre à l'échelle une application
+#### 3.3.6  Mettre à jour une application
 
 # Introduction à Kubernetes
 
@@ -154,7 +158,7 @@ Avec toutes ces fonctionnalités configurables mais flexibles, les orchestrateur
 ![kubernetes](./Kubernetes.png)
 ### 2.2 Les différents types d'installation du cluster
 
-## 2.2 Les blocs de base de K8s (nodes, pods,
+## 2.2 Pods et Nodes
 
 ********************************************************************************
 Kubernetes Pods
@@ -178,7 +182,7 @@ Un pod est un groupe d'un ou plusieurs conteneurs d'applications (tels que Docke
 
 
 ********************************************************************************
-Noeuds
+Kubernetes Nodes
 ********************************************************************************
 
 
@@ -236,6 +240,7 @@ $
 
 ********************************************************************************
 deployer une application
+#### 3.3.2  deployer une application
 ********************************************************************************
 
 ```console
@@ -293,7 +298,7 @@ Name of the Pod: kubernetes-bootcamp-69fbc6f4cf-8nmw9
 $ 
 ```
 *****************************************************************************************
-### Explorer une application
+#### 3.3.3   Explorer une application
 *****************************************************************************************
 
 Les opérations les plus courantes peuvent être effectuées avec les commandes kubectl suivantes:
@@ -303,14 +308,7 @@ kubectl describe - affiche des informations détaillées sur une ressource
 kubectl logs - imprimer les journaux d'un conteneur dans un pod
 kubectl exec - exécute une commande sur un conteneur dans un pod
 
-**Exemples**
-
-```console
-ulysse@debian101:~$ kubectl describe pods                                                                                                                                   Name:         kubernetes-bootcamp-57978f5f5d-592wt                                                                                                                          Namespace:    default                                                                                                                                                       Priority:     0                                                                                                                                                             Node:         minikube/192.168.49.2                                                                                                                                         Start Time:   Mon, 15 Feb 2021 13:16:28 +0100                                                                                                                               Labels:       app=kubernetes-bootcamp                                                                                                                                                     pod-template-hash=57978f5f5d                                                                                                                                  Annotations:  <none>                                                                                                                                                        Status:       Running                                                                                                                                                       IP:           172.17.0.3                                                                                                                                                    IPs:                                                                                                                                                                          IP:           172.17.0.3                                                                                                                                                  Controlled By:  ReplicaSet/kubernetes-bootcamp-57978f5f5d                                                                                                                   Containers:                                                                                                                                                                   kubernetes-bootcamp:                                                                                                                                                          Container ID:   docker://1908c61ca2747d61d9e33cc9c1c97054e550b95dbfaeca390cc43924b934a26b                                                                                   Image:          gcr.io/google-samples/kubernetes-bootcamp:v1                                                                                                                Image ID:       docker-pullable://gcr.io/google-samples/kubernetes-bootcamp@sha256:0d6b8ee63bb57c5f5b6156f446b3bc3b3c143d233037f3a2f00e279c8fcc64af                         Port:           <none>                                                                                                                                                      Host Port:      <none>                                                                                                                                                      State:          Running                                                                                                                                                       Started:      Mon, 15 Feb 2021 13:17:15 +0100                                                                                                                             Ready:          True                                                                                                                                                        Restart Count:  0                                                                                                                                                           Environment:    <none>                                                                                                                                                      Mounts:                                                                                                                                                                       /var/run/secrets/kubernetes.io/serviceaccount from default-token-ds46q (ro)                                                                                           Conditions:                                                                                                                                                                   Type              Status                                                                                                                                                    Initialized       True                                                                                                                                                      Ready             True                                                                                                                                                      ContainersReady   True                                                                                                                                                      PodScheduled      True                                                                                                                                                    Volumes:                                                                                                                                                                      default-token-ds46q:                                                                                                                                                          Type:        Secret (a volume populated by a Secret)                                                                                                                        SecretName:  default-token-ds46q                                                                                                                                            Optional:    false                                                                                                                                                      QoS Class:       BestEffort                                                                                                                                                 Node-Selectors:  <none>                                                                                                                                                     Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s                                                                                                                   node.kubernetes.io/unreachable:NoExecute op=Exists for 300s                                                                                                Events:                                                                                                                                                                       Type    Reason     Age   From               Message                                                                                                                         ----    ------     ----  ----               -------                                                                                                                         Normal  Scheduled  67m   default-scheduler  Successfully assigned default/kubernetes-bootcamp-57978f5f5d-592wt to minikube                                                  Normal  Pulling    67m   kubelet            Pulling image "gcr.io/google-samples/kubernetes-bootcamp:v1"                                                                    Normal  Pulled     66m   kubelet            Successfully pulled image "gcr.io/google-samples/kubernetes-bootcamp:v1" in 43.971962506s                                       Normal  Created    66m   kubelet            Created container kubernetes-bootcamp                                                                                           Normal  Started    66m   kubelet            Started container kubernetes-bootcamp
-```
-
-
-Vous pouvez utiliser ces commandes pour voir quand les applications ont été déployées, quel est leur état actuel, où elles s'exécutent et quelles sont leurs configurations.
+On peut utiliser ces commandes pour voir quand les applications ont été déployées, quel est leur état actuel, où elles s'exécutent et quelles sont leurs configurations.
 
 Maintenant que nous en savons plus sur nos composants de cluster et la ligne de commande, explorons notre application.
 
@@ -480,7 +478,7 @@ Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-qnsrl | 
 ```
 
 ********************************************************************************
-Utiliser les services pour exposer son application
+#### 3.3.4  Utiliser les services pour exposer son application
 ********************************************************************************
 
 
@@ -488,11 +486,11 @@ Utiliser les services pour exposer son application
 
 
 ********************************************************************************
-Mettre à l'échelle une application
+#### 3.3.5  Mettre à l'échelle une application
 ********************************************************************************
 
 ![scaling1](./scaling1.png)
 ![scaling2](./scaling2.png)
 ********************************************************************************
-Mettre à jour une application
+#### 3.3.6  Mettre à jour une application
 ********************************************************************************
