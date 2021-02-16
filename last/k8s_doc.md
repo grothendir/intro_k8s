@@ -224,14 +224,17 @@ kubernetes-bootcamp   1/1     1            1           38s
 $ 
 ```
 
-
+```shell
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; 
 kubectl proxy
 
 Starting Proxy. After starting it will not output a response. Please click the first Terminal Tab
+```
 
+```shell
 $ kubectl proxy
 Starting to serve on 127.0.0.1:8001
+```
 
 Nous avons maintenant une connexion entre notre hôte (le terminal en ligne) et le cluster Kubernetes. Le proxy permet un accès direct à l'API depuis ces terminaux.
 
@@ -254,11 +257,13 @@ $ curl http://localhost:8001/version
 
 Les pods qui s'exécutent dans Kubernetes s'exécutent sur un réseau privé et isolé. Par défaut, ils sont visibles depuis d'autres pods et services au sein du même cluster Kubernetes, mais pas en dehors de ce réseau. Lorsque nous utilisons kubectl, nous interagissons via un point de terminaison d'API pour communiquer avec notre application.
 
+```shell
 $ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
 
 $ echo Name of the Pod: $POD_NAME
 Name of the Pod: kubernetes-bootcamp-69fbc6f4cf-8nmw9
 $ 
+```
 
 ********************************************************************************
 Kubernetes Pods
