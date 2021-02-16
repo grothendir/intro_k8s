@@ -43,13 +43,13 @@ La principale différence entre un conteneur et une machine virtuelle est que le
 ![emulateur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiEmulateur.png)
 Utile pour les développeurs et les testeurs, en formation ou pour découvrir de nouveaux OS. Cette solution isole bien les OS invités mais les performances sont bien moindres que dans le cas des hyperviseurs de type 1, car dans le type 2, l'hyperviseur est un programme lourd qui tourne sur l'OS de l'hôte.
 
-Exemples: VMware Fusion/Workstation, VirtualBox, QEMU, ...
+**Exemple**s: VMware Fusion/Workstation, VirtualBox, QEMU, ...
 
 * Les hyperviseurs de type 1
 ![hyperviseur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiHyperviseur.png)
 C'est la solution adoptée en entreprise. L'hyperviseur de type 1 est un noyau système (Linux) très léger (juste avec une busybox) et optimisé pour gérer les accès des noyaux d'OS invités à l'architecture sous-jacente.
 Inconvénient: plus onéreux.
-Exemples: VMware ESXi/vSphere, Hyper-V, KVM, Xen, ...
+**Exemples**: VMware ESXi/vSphere, Hyper-V, KVM, Xen, ...
 
 
 ### 1.3 Orchestration des conteneurs
