@@ -64,7 +64,7 @@ La solution d'orchestration de conteneurs de la société Docker est efficace et
 
 ##  2   Architecture
 ### 2.1 Architecture de Kubernetes
-![kubernetes](/home/ulysse/Documents/acensi/poc/Kubernetes.png)
+![kubernetes](./Kubernetes.png)
 ### 2.2 Les différents types d'installation du cluster
 ##  3   Utilisation
 ### 3.1 Création d'un cluster local avec minikube
@@ -278,7 +278,7 @@ Commandes principales de Kubectl
 
 Un pod est un groupe d'un ou plusieurs conteneurs d'applications (tels que Docker) et comprend un stockage partagé (volumes), une adresse IP et des informations sur la façon de les exécuter.
 
-![pod](/home/ulysse/Documents/acensi/poc/intro_k8s/pods.png)
+![pod](./pods.png)
 
 Noeuds
 
@@ -294,7 +294,7 @@ Un environnement d'exécution de conteneur (comme Docker) chargé d'extraire l'i
 
 
 
-![node](/home/ulysse/Documents/acensi/poc/intro_k8s/node.png)
+![node](./node.png)
 
 
 *****************************************************************************************
