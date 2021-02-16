@@ -240,7 +240,13 @@ $
 ********************************************************************************
 #### 3.3.2  deployer une application
 ********************************************************************************
+
+
+![cluster](./cluster.PNG)
+
+
 vérification de la version de kubectl
+
 
 ```console
 $ kubectl version 
