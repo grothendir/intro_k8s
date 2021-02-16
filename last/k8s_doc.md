@@ -70,8 +70,7 @@ La solution d'orchestration de conteneurs de la société Docker est efficace et
 ### 3.1 Création d'un cluster local avec minikube
 ### 3.2 Les blocs de base de K8s (nodes, pods, label, services, volumes, namespaces, ...)
 ### 3.3 Gestion du cluster Kubernetes
-
-### test
+#### 3.3.1 L'environnement minikube
 
 ********************************************************************************
 Qu'est ce qu'un conteneur?
@@ -138,10 +137,10 @@ La plupart des orchestrateurs de conteneurs peuvent:
 
 - Regrouper les hôtes lors de la création d'un cluster
 - Planifier les conteneurs à exécuter sur les hôtes du cluster en fonction de la disponibilité des ressources
-Permettre aux conteneurs d'un cluster de communiquer entre eux quel que soit l'hôte sur lequel ils sont déployés dans le cluster
-Lier des conteneurs et des ressources de stockage
-Regroupez des ensembles de conteneurs similaires et liez-les à des constructions d'équilibrage de charge pour simplifier l'accès aux applications conteneurisées en créant un niveau d'abstraction entre les conteneurs et l'utilisateur
-Gérez et optimisez l'utilisation des ressources
+- Permettre aux conteneurs d'un cluster de communiquer entre eux quel que soit l'hôte sur lequel ils sont déployés dans le cluster
+- Lier des conteneurs et des ressources de stockage
+- Regroupez des ensembles de conteneurs similaires et liez-les à des constructions d'équilibrage de charge pour simplifier l'accès aux applications conteneurisées en créant un niveau d'abstraction entre les conteneurs et l'utilisateur
+- Gérez et optimisez l'utilisation des ressources
 Permettre la mise en œuvre de stratégies pour sécuriser l'accès aux applications exécutées à l'intérieur des conteneurs.
 
 Avec toutes ces fonctionnalités configurables mais flexibles, les orchestrateurs de conteneurs sont un choix évident lorsqu'il s'agit de gérer des applications conteneurisées à grande échelle. Dans ce cours, nous explorerons Kubernetes, l'un des outils d'orchestration de conteneurs les plus demandés actuellement.
@@ -172,7 +171,9 @@ sondes d'activité, sonde de vitalité
 
 
 
-
+********************************************************************************
+Créer un cluster kubernetes avec minikube
+********************************************************************************
 
 
 ```shell
@@ -204,7 +205,9 @@ minikube   Ready    master   102s   v1.17.3
 $ 
 ```
 
-deploy an app
+********************************************************************************
+deployer une application
+********************************************************************************
 
 ```shell
 $ kubectl version 
@@ -261,7 +264,7 @@ $
 Kubernetes Pods
 ********************************************************************************
 
-Lorsque vous avez créé un déploiement dans le module 2, Kubernetes a créé un pod pour héberger votre instance d'application. Un pod est une abstraction Kubernetes qui représente un groupe d'un ou plusieurs conteneurs d'application (tels que Docker) et certaines ressources partagées pour ces conteneurs. Ces ressources comprennent:
+Lorsqu-on a créé un déploiement dans le module 2, Kubernetes a créé un pod pour héberger votre instance d'application. Un pod est une abstraction Kubernetes qui représente un groupe d'un ou plusieurs conteneurs d'application (tels que Docker) et certaines ressources partagées pour ces conteneurs. Ces ressources comprennent:
 
 Stockage partagé, sous forme de volumes
 Mise en réseau, en tant qu'adresse IP de cluster unique
@@ -272,15 +275,15 @@ Un pod modélise un «hôte logique» spécifique à une application et peut con
 Les pods sont l'unité atomique sur la plate-forme Kubernetes. Lorsque nous créons un déploiement sur Kubernetes, ce déploiement crée des pods avec des conteneurs à l'intérieur (par opposition à la création directe de conteneurs). Chaque pod est lié au noeud où il est planifié et y reste jusqu'à la fin (conformément à la politique de redémarrage) ou la suppression. En cas de défaillance d'un noeud, des pods identiques sont planifiés sur d'autres noeuds disponibles dans le cluster.
 Résumé:
 
-Pods
-Noeuds
-Commandes principales de Kubectl
 
 Un pod est un groupe d'un ou plusieurs conteneurs d'applications (tels que Docker) et comprend un stockage partagé (volumes), une adresse IP et des informations sur la façon de les exécuter.
 
 ![pod](./pods.PNG)
 
+
+********************************************************************************
 Noeuds
+********************************************************************************
 
 
 Un pod fonctionne toujours sur un noeud. Un noeud est une machine de travail dans Kubernetes et peut être une machine virtuelle ou physique, selon le cluster. Chaque noeud est géré par le maître. Un noeud peut avoir plusieurs pods et le maître Kubernetes gère automatiquement la planification des pods sur les noeuds du cluster. La planification automatique du Master prend en compte les ressources disponibles sur chaque Noeud.
@@ -321,7 +324,6 @@ Maintenant que nous en savons plus sur nos composants de cluster et la ligne de 
 
 *Un noeud est une machine de travail dans Kubernetes et peut être une VM ou une machine physique, selon le cluster. Plusieurs pods peuvent s'exécuter sur un seul noeud*.
 
-### Explorer son app
 
 ```shell
 $ kubectl describe pods
@@ -486,7 +488,7 @@ Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-qnsrl | 
 ```
 
 ********************************************************************************
-Using a Service to Expose Your App
+Utiliser les services pour exposer son application
 ********************************************************************************
 
 
@@ -494,11 +496,11 @@ Using a Service to Expose Your App
 
 
 ********************************************************************************
-Scale your app
+Mettre à l'échelle une application
 ********************************************************************************
 
 ![scaling1](./scaling1.png)
 ![scaling2](./scaling2.png)
 ********************************************************************************
-update your app
+Mettre à jour une application
 ********************************************************************************
