@@ -32,33 +32,34 @@ démo:
 admin@ubuntu:~$
 ```
 
-Outre la densité, on améliore le temps de *cold start*, et, plus important encore on réduit la surface d'attaque au strict minimum (il y a moins de vulénrabilités potentielles dans un binaire que dans un Linux, même un Linux minimaliste).
-
+Outre la densité et les performances pendant l'utilisation, on améliore le temps de *cold start*, et, plus important encore on réduit la surface d'attaque au strict minimum (il y a moins de vulénrabilités potentielles dans un binaire que dans un Linux, même un Linux minimaliste).
 
 Cependant, on ne peut pas vraiment parler de virtualisation de système d'exploitation.
-exemples: chroot, BSD Jail, OpenVZ, Docker (qui s'appuie sur LXC - Linux Container - et les namespaces, fonctionnalités du noyau Linux)
+
+**Exemples**: chroot, BSD Jail, OpenVZ, Docker (qui s'appuie sur LXC - Linux Container - et les namespaces, fonctionnalités du noyau Linux)
 La principale différence entre un conteneur et une machine virtuelle est que le conteneur **utilise le noyau de l'hôte**, ils sont donc très légers et très faciles  et rapides à déployer/détruire/redéployer.
 
 * Les hyperviseurs de type 2
 ![emulateur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiEmulateur.png)
 Utile pour les développeurs et les testeurs, en formation ou pour découvrir de nouveaux OS. Cette solution isole bien les OS invités mais les performances sont bien moindres que dans le cas des hyperviseurs de type 1, car dans le type 2, l'hyperviseur est un programme lourd qui tourne sur l'OS de l'hôte.
 
-**Exemple**s: VMware Fusion/Workstation, VirtualBox, QEMU, ...
+**Exemples**: VMware Fusion/Workstation, VirtualBox, QEMU, ...
 
 * Les hyperviseurs de type 1
 ![hyperviseur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiHyperviseur.png)
 C'est la solution adoptée en entreprise. L'hyperviseur de type 1 est un noyau système (Linux) très léger (juste avec une busybox) et optimisé pour gérer les accès des noyaux d'OS invités à l'architecture sous-jacente.
 Inconvénient: plus onéreux.
+
 **Exemples**: VMware ESXi/vSphere, Hyper-V, KVM, Xen, ...
 
 
 ### 1.3 Orchestration des conteneurs
 La gestion d'un petit nombre de conteneurs (pour les développeurs et les testeurs) n'a pas besoin d'un orchestrateur, mais dès qu'on passe dans des environnements de production il faut une Infrastructure As A Service comme K8s, ou Plateform As A Service (OpenShift, Rancher, ...).
 
-* Docker swarm
+* Docker swarm:
 La solution d'orchestration de conteneurs de la société Docker est efficace et simple à mettre en place, mais elle a ses limites. Si un conteneur tombe en panne par exemple, c'est l'administrateur qui doit s'occuper manuellement de corriger le problème, et pendant ce temps, l'application est indisponible. Par contre Kubernetes garantit la disponibilité en s'occupant lui-même de corriger ce problème. Ce n'est qu'un exemple de ce que K8s fait de mieux que ses concurrents (Docker Swarm, Mesos,...), on pourrait citer aussi la gestion de l'infrastructure réseau.
 
-* Kubernetes
+* Kubernetes:
 À l'origine, Kubernetes vient du projet Borg développé par Google depuis 2005, qu'ils ont ensuite rendu opensource en 2015 sous le nom de Kubernetes, et qui est depuis développpé par de nombrexu acteurs de l'opensource (RedHat, VMWare, ...). K8s est écrit en langage Go, langage développé par Ken Thompson le créateur d'Unix. *Go est un langage efficace pour la programmation parallèle, et donc bien adapté à un projet tel que K8s.* 
 
 ##  2   Architecture
