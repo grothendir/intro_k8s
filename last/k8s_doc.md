@@ -51,7 +51,7 @@ Cependant, on ne peut pas vraiment parler de virtualisation de système d'exploi
 La principale différence entre un conteneur et une machine virtuelle est que le conteneur **utilise le noyau de l'hôte**, ils sont donc très légers et très faciles  et rapides à déployer/détruire/redéployer.
 
 * Les hyperviseurs de type 2
-<img src="http://Diagramme_ArchiEmulateur.png" width="200" height="200" />
+<img src="./Diagramme_ArchiEmulateur.png" width="200" height="200" />
 ![emulateur](./Diagramme_ArchiEmulateur.png =200x)
 Utile pour les développeurs et les testeurs, en formation ou pour découvrir de nouveaux OS. Cette solution isole bien les OS invités mais les performances sont bien moindres que dans le cas des hyperviseurs de type 1, car dans le type 2, l'hyperviseur est un programme lourd qui tourne sur l'OS de l'hôte.
 
