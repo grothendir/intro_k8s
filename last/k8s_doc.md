@@ -203,7 +203,7 @@ NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
 kubernetes-bootcamp   1/1     1            1           38s
 $ 
 ```
-ON va éexcuter la commande ```shell kubectl proxy``` dans un autre terminal et laisser la commande tourner.
+ON va exécuter la commande ```shell kubectl proxy``` dans un autre terminal et laisser la commande tourner.
 ```shell
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; 
 kubectl proxy
