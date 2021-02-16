@@ -1,4 +1,19 @@
 **Warning: ce qui est écrit en italique est ma propre interprétation, ce n'est peut-être pas toujours exact.**
+# Introduction à Kubernetes
+## 1. Concepts
+### 1.1 Applications monolithiques et microservices
+### 1.2 Les conteneurs
+### 1.3 Orchestration des conteneurs
+##  2   Architecture
+### 2.1 Architecture de Kubernetes
+![kubernetes](./Kubernetes.png)
+### 2.2 Les différents types d'installation du cluster
+##  3   Utilisation
+### 3.1 Création d'un cluster local avec minikube
+## 3.2 Les blocs de base de K8s (nodes, pods, label, services, volumes, namespaces, ...)
+#### 3.3 Gestion du cluster Kubernetes
+#### 3.3.1 L'environnement minikube
+
 
 # Introduction à Kubernetes
 
@@ -61,16 +76,6 @@ La solution d'orchestration de conteneurs de la société Docker est efficace et
 
 * Kubernetes:
 À l'origine, Kubernetes vient du projet Borg développé par Google depuis 2005, qu'ils ont ensuite rendu opensource en 2015 sous le nom de Kubernetes, et qui est depuis développpé par de nombrexu acteurs de l'opensource (RedHat, VMWare, ...). K8s est écrit en langage Go, langage développé par Ken Thompson le créateur d'Unix. *Go est un langage efficace pour la programmation parallèle, et donc bien adapté à un projet tel que K8s.* 
-
-##  2   Architecture
-### 2.1 Architecture de Kubernetes
-![kubernetes](./Kubernetes.png)
-### 2.2 Les différents types d'installation du cluster
-##  3   Utilisation
-### 3.1 Création d'un cluster local avec minikube
-### 3.2 Les blocs de base de K8s (nodes, pods, label, services, volumes, namespaces, ...)
-### 3.3 Gestion du cluster Kubernetes
-#### 3.3.1 L'environnement minikube
 
 ********************************************************************************
 Qu'est ce qu'un conteneur?
@@ -145,36 +150,11 @@ Permettre la mise en œuvre de stratégies pour sécuriser l'accès aux applicat
 
 Avec toutes ces fonctionnalités configurables mais flexibles, les orchestrateurs de conteneurs sont un choix évident lorsqu'il s'agit de gérer des applications conteneurisées à grande échelle. Dans ce cours, nous explorerons Kubernetes, l'un des outils d'orchestration de conteneurs les plus demandés actuellement.
 
-
-Gérer les ressources kubernetes
-
-request: minimum de ressources 
-limit: maximum de ressources
-
-exemple: extrait de fichier yaml:
-resources:
-limits:
-memory: "300Mi"
-cpu: "1"
-request:
-memory: "200Mi"
-cpu: "0.5"
-
-
-kubernetes gère les pods, pas les conteneurs.
-
-sondes d'activité, sonde de vitalité
-
-
-
-
-
-
-
+### 3.3 Gestion du cluster Kubernetes
+#### 3.3.1 L'environnement minikube
 ********************************************************************************
 Créer un cluster kubernetes avec minikube
 ********************************************************************************
-
 
 ```shell
 $ minikube start 
@@ -223,14 +203,13 @@ NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
 kubernetes-bootcamp   1/1     1            1           38s
 $ 
 ```
-
+ON va éexcuter la commande ```shell kubectl proxy``` dans un autre terminal et laisser la commande tourner.
 ```shell
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; 
 kubectl proxy
 
 Starting Proxy. After starting it will not output a response. Please click the first Terminal Tab
 ```
-
 ```shell
 $ kubectl proxy
 Starting to serve on 127.0.0.1:8001
@@ -238,7 +217,7 @@ Starting to serve on 127.0.0.1:8001
 
 Nous avons maintenant une connexion entre notre hôte (le terminal en ligne) et le cluster Kubernetes. Le proxy permet un accès direct à l'API depuis ces terminaux.
 
-Vous pouvez voir toutes ces API hébergées via le point de terminaison du proxy. Par exemple, nous pouvons interroger la version directement via l'API à l'aide de la commande curl:
+On peut voir toutes ces API hébergées via le point de terminaison du proxy. Par exemple, nous pouvons interroger la version directement via l'API à l'aide de la commande curl (commande à éxecuter sur le premier terminal):
 
 ```shell
 $ curl http://localhost:8001/version
