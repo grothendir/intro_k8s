@@ -152,7 +152,7 @@ Avec toutes ces fonctionnalités configurables mais flexibles, les orchestrateur
 Créer un cluster kubernetes avec minikube
 ********************************************************************************
 
-```shell
+```console
 $ minikube start 
 * minikube v1.8.1 on Ubuntu 18.04
 * Using the none driver based on user configuration
