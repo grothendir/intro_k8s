@@ -129,15 +129,15 @@ Docker Swarm est un orchestrateur de conteneurs fourni par Docker, Inc. Il fait 
 
 
 ********************************************************************************
-Pourquoi utiliser des conteneurs?
+Why Use Container Orchestrators?
 ********************************************************************************
 
 Bien que nous puissions gérer manuellement quelques conteneurs ou écrire des scripts pour gérer le cycle de vie de dizaines de conteneurs, les orchestrateurs facilitent grandement les choses pour les opérateurs, en particulier lorsqu'il s'agit de gérer des centaines et des milliers de conteneurs s'exécutant sur une infrastructure mondiale.
 
 La plupart des orchestrateurs de conteneurs peuvent:
 
-- Regrouper les hôtes lors de la création d'un cluster
-- Planifier les conteneurs à exécuter sur les hôtes du cluster en fonction de la disponibilité des ressources
+Regrouper les hôtes lors de la création d'un cluster
+Planifier les conteneurs à exécuter sur les hôtes du cluster en fonction de la disponibilité des ressources
 Permettre aux conteneurs d'un cluster de communiquer entre eux quel que soit l'hôte sur lequel ils sont déployés dans le cluster
 Lier des conteneurs et des ressources de stockage
 Regroupez des ensembles de conteneurs similaires et liez-les à des constructions d'équilibrage de charge pour simplifier l'accès aux applications conteneurisées en créant un niveau d'abstraction entre les conteneurs et l'utilisateur
