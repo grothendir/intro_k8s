@@ -294,7 +294,7 @@ Un environnement d'exécution de conteneur (comme Docker) chargé d'extraire l'i
 
 
 
-![node](./node.png)
+![node](./node.PNG)
 
 
 *****************************************************************************************
