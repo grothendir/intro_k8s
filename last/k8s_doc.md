@@ -1,21 +1,25 @@
 # Introduction à Kubernetes
 **Warning: ce qui est écrit en italique est ma propre interprétation, ce n'est peut-être pas toujours exact.**
-## 1. Concepts
-### 1.1 Applications monolithiques et microservices
-### 1.2 Les conteneurs
-### 1.3 Orchestration des conteneurs
-##  2   Architecture
-### 2.1 Architecture de Kubernetes
-### 2.2 Pods et Nodes
+##   1. Concepts
+###  1.1 Applications monolithiques et microservices
+###  1.2 Les conteneurs
+###  1.3 Orchestration des conteneurs
+##   2   Architecture
+###  2.1 Architecture de Kubernetes
+###  2.2 Pods et Nodes
 #### 2.2.1 Pods
 #### 2.2.2 Nodes
-##  3   Utilisation
-### 3.1 Les différents types d'installation du cluster
+##   3   Utilisation
+###  3.1 Les différents types d'installation du cluster
 #### 3.1.1 Bare metal
 #### 3.1.2 Dans un environnement Cloud
 #### 3.1.3 Minikube
-## 3.2 Les blocs de base de K8s (nodes, pods, label, services, volumes, namespaces, ...)
-#### 3.3 Gestion du cluster Kubernetes
+##   3.2 Les blocs de base de K8s (nodes, pods, label, services, volumes, namespaces, ...)
+#### 3.2.1 Nodes
+#### 3.2.2 Pods
+#### 3.2.3 Services
+#### 3.2.
+###  3.3 Gestion du cluster Kubernetes
 #### 3.3.1 L'environnement local minikube
 #### 3.3.2  deployer une application
 #### 3.3.3   Explorer une application
@@ -157,6 +161,9 @@ Avec toutes ces fonctionnalités configurables mais flexibles, les orchestrateur
 ##  2   Architecture
 ### 2.1 Architecture de Kubernetes
 ![kubernetes](./Kubernetes.png)
+
+Le noeud **Master** est aussi appelé **Control Plane**.
+
 ### 2.2 Les différents types d'installation du cluster
 
 ## 2.2 Pods et Nodes
