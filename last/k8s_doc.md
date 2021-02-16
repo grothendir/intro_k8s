@@ -6,8 +6,9 @@
 ### 1.3 Orchestration des conteneurs
 ##  2   Architecture
 ### 2.1 Architecture de Kubernetes
-![kubernetes](./Kubernetes.png)
 ### 2.2 Pods et Nodes
+#### 2.2.1 Pods
+#### 2.2.2 Nodes
 ##  3   Utilisation
 ### 3.1 Les différents types d'installation du cluster
 #### 3.1.1 Bare metal
@@ -204,9 +205,8 @@ Un environnement d'exécution de conteneur (comme Docker) chargé d'extraire l'i
 
 
 ### 3.3 Gestion du cluster Kubernetes
-#### 3.3.1 L'environnement minikube
 ********************************************************************************
-Créer un cluster kubernetes avec minikube
+#### 3.3.1 Créer un cluster avec l'environnement minikube
 ********************************************************************************
 
 ```console
@@ -225,7 +225,6 @@ $ minikube start
 $ 
 ```
 
-
 ```console
 $ kubectl cluster-info 
 Kubernetes master is running at https://172.17.0.28:8443
@@ -239,9 +238,9 @@ $
 ```
 
 ********************************************************************************
-deployer une application
 #### 3.3.2  deployer une application
 ********************************************************************************
+vérification de la version de kubectl
 
 ```console
 $ kubectl version 
@@ -257,7 +256,9 @@ NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
 kubernetes-bootcamp   1/1     1            1           38s
 $ 
 ```
-ON va exécuter la commande ```kubectl proxy``` dans un autre terminal et laisser la commande tourner.
+Visualiser notre application:
+
+On va exécuter la commande ```kubectl proxy``` dans un autre terminal et laisser la commande tourner.
 ```console
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; 
 kubectl proxy
@@ -389,9 +390,8 @@ Encore une fois, nous allons obtenir le nom du pod et interroger ce pod directem
 ```console
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n";
 $ kubectl proxy
-``
-
-Now again, we'll get the Pod name and query that pod directly through the proxy. To get the Pod name and store it in the POD_NAME environment variable:
+```
+Encore une fois, on peut avoir le nom du Pod et faire des requêtes sur ce pod directement à travers le proxy. Pour avoir le nom du Pod et le stocker dans la variable d'environnement POD_NAME, exécuter la commande suivante:
 
 ```console
 $ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
