@@ -169,7 +169,7 @@ $
 ```
 
 
-```console
+```shell
 $ kubectl cluster-info 
 Kubernetes master is running at https://172.17.0.28:8443
 KubeDNS is running at https://172.17.0.28:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
@@ -185,7 +185,7 @@ $
 deployer une application
 ********************************************************************************
 
-```console
+```shell
 $ kubectl version 
 Client Version: version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.0", GitCommit:"70132b0f130acc0bed193d9ba59dd186f0e634cf", GitTreeState:"clean", BuildDate:"2019-12-07T21:20:10Z", GoVersion:"go1.13.4", Compiler:"gc", Platform:"linux/amd64"}
 Server Version: version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.0", GitCommit:"70132b0f130acc0bed193d9ba59dd186f0e634cf", GitTreeState:"clean", BuildDate:"2019-12-07T21:12:17Z", GoVersion:"go1.13.4", Compiler:"gc", Platform:"linux/amd64"}
@@ -200,13 +200,13 @@ kubernetes-bootcamp   1/1     1            1           38s
 $ 
 ```
 ON va exécuter la commande ```kubectl proxy``` dans un autre terminal et laisser la commande tourner.
-```console
+```shell
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n"; 
 kubectl proxy
 
 Starting Proxy. After starting it will not output a response. Please click the first Terminal Tab
 ```
-```console
+```shell
 $ kubectl proxy
 Starting to serve on 127.0.0.1:8001
 ```
@@ -215,7 +215,7 @@ Nous avons maintenant une connexion entre notre hôte (le terminal en ligne) et 
 
 On peut voir toutes ces API hébergées via le point de terminaison du proxy. Par exemple, nous pouvons interroger la version directement via l'API à l'aide de la commande curl (commande à éxecuter sur le premier terminal):
 
-```console
+```shell
 $ curl http://localhost:8001/version
 {
 "major": "1",
@@ -232,7 +232,7 @@ $ curl http://localhost:8001/version
 
 Les pods qui s'exécutent dans Kubernetes s'exécutent sur un réseau privé et isolé. Par défaut, ils sont visibles depuis d'autres pods et services au sein du même cluster Kubernetes, mais pas en dehors de ce réseau. Lorsque nous utilisons kubectl, nous interagissons via un point de terminaison d'API pour communiquer avec notre application.
 
-```console
+```shell
 $ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
 
 $ echo Name of the Pod: $POD_NAME
@@ -293,7 +293,7 @@ kubectl exec - exécute une commande sur un conteneur dans un pod
 
 **Exemples**
 
-```console
+```shell
 ulysse@debian101:~$ kubectl describe pods                                                                                                                                   Name:         kubernetes-bootcamp-57978f5f5d-592wt                                                                                                                          Namespace:    default                                                                                                                                                       Priority:     0                                                                                                                                                             Node:         minikube/192.168.49.2                                                                                                                                         Start Time:   Mon, 15 Feb 2021 13:16:28 +0100                                                                                                                               Labels:       app=kubernetes-bootcamp                                                                                                                                                     pod-template-hash=57978f5f5d                                                                                                                                  Annotations:  <none>                                                                                                                                                        Status:       Running                                                                                                                                                       IP:           172.17.0.3                                                                                                                                                    IPs:                                                                                                                                                                          IP:           172.17.0.3                                                                                                                                                  Controlled By:  ReplicaSet/kubernetes-bootcamp-57978f5f5d                                                                                                                   Containers:                                                                                                                                                                   kubernetes-bootcamp:                                                                                                                                                          Container ID:   docker://1908c61ca2747d61d9e33cc9c1c97054e550b95dbfaeca390cc43924b934a26b                                                                                   Image:          gcr.io/google-samples/kubernetes-bootcamp:v1                                                                                                                Image ID:       docker-pullable://gcr.io/google-samples/kubernetes-bootcamp@sha256:0d6b8ee63bb57c5f5b6156f446b3bc3b3c143d233037f3a2f00e279c8fcc64af                         Port:           <none>                                                                                                                                                      Host Port:      <none>                                                                                                                                                      State:          Running                                                                                                                                                       Started:      Mon, 15 Feb 2021 13:17:15 +0100                                                                                                                             Ready:          True                                                                                                                                                        Restart Count:  0                                                                                                                                                           Environment:    <none>                                                                                                                                                      Mounts:                                                                                                                                                                       /var/run/secrets/kubernetes.io/serviceaccount from default-token-ds46q (ro)                                                                                           Conditions:                                                                                                                                                                   Type              Status                                                                                                                                                    Initialized       True                                                                                                                                                      Ready             True                                                                                                                                                      ContainersReady   True                                                                                                                                                      PodScheduled      True                                                                                                                                                    Volumes:                                                                                                                                                                      default-token-ds46q:                                                                                                                                                          Type:        Secret (a volume populated by a Secret)                                                                                                                        SecretName:  default-token-ds46q                                                                                                                                            Optional:    false                                                                                                                                                      QoS Class:       BestEffort                                                                                                                                                 Node-Selectors:  <none>                                                                                                                                                     Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s                                                                                                                   node.kubernetes.io/unreachable:NoExecute op=Exists for 300s                                                                                                Events:                                                                                                                                                                       Type    Reason     Age   From               Message                                                                                                                         ----    ------     ----  ----               -------                                                                                                                         Normal  Scheduled  67m   default-scheduler  Successfully assigned default/kubernetes-bootcamp-57978f5f5d-592wt to minikube                                                  Normal  Pulling    67m   kubelet            Pulling image "gcr.io/google-samples/kubernetes-bootcamp:v1"                                                                    Normal  Pulled     66m   kubelet            Successfully pulled image "gcr.io/google-samples/kubernetes-bootcamp:v1" in 43.971962506s                                       Normal  Created    66m   kubelet            Created container kubernetes-bootcamp                                                                                           Normal  Started    66m   kubelet            Started container kubernetes-bootcamp
 ```
 
@@ -305,7 +305,7 @@ Maintenant que nous en savons plus sur nos composants de cluster et la ligne de 
 *Un noeud est une machine de travail dans Kubernetes et peut être une VM ou une machine physique, selon le cluster. Plusieurs pods peuvent s'exécuter sur un seul noeud*.
 
 
-```console
+```shell
 $ kubectl describe pods
 Name:         kubernetes-bootcamp-765bf4c7b4-qnsrl
 Namespace:    default
@@ -363,7 +363,7 @@ $
 
 Rappelez-vous que les pods fonctionnent dans un réseau privé isolé - nous devons donc leur accéder par proxy afin de pouvoir les déboguer et interagir avec eux. Pour ce faire, nous utiliserons la commande proxy kubectl pour exécuter un proxy dans une deuxième fenêtre de terminal. Cliquez sur la commande ci-dessous pour ouvrir automatiquement un nouveau terminal et exécuter le proxy:
 
-```console
+```shell
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output e first Terminal Tab\n"; kubectl proxy
 
 
@@ -376,14 +376,14 @@ Starting to serve on 127.0.0.1:8001
 
 Encore une fois, nous allons obtenir le nom du pod et interroger ce pod directement via le proxy. Pour obtenir le nom du pod et le stocker dans la variable d'environnement POD_NAME:
 
-```console
+```shell
 $ echo -e "\n\n\n\e[92mStarting Proxy. After starting it will not output a response. Please click the first Terminal Tab\n";
 $ kubectl proxy
 ``
 
 Now again, we'll get the Pod name and query that pod directly through the proxy. To get the Pod name and store it in the POD_NAME environment variable:
 
-```console
+```shell
 $ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
 $ echo Name of the Pod: $POD_NAME
 ```
@@ -392,7 +392,7 @@ $ echo Name of the Pod: $POD_NAME
 
 Tout ce que l'application enverrait normalement à STDOUT devient des journaux pour le conteneur dans le pod. Nous pouvons récupérer ces journaux à l'aide de la commande kubectl logs:
 
-```console
+```shell
 $ kubectl logs kubernetes-bootcamp-765bf4c7b4-qnsrl
 Kubernetes Bootcamp App Started At: 2021-02-15T14:19:08.285Z | Running On:  kubernetes-bootcamp-765bf4c7b4-qnsrl
 
@@ -408,7 +408,7 @@ Usage:                                                                          
 
 Listons par exemple les variables d'environnement:
 
-```console
+```shell
 $ kubectl exec $POD_NAME -- env
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 HOSTNAME=kubernetes-bootcamp-765bf4c7b4-qnsrl
@@ -430,14 +430,14 @@ Encore une fois, il convient de mentionner que le nom du conteneur lui-même peu
 Commençons ensuite une session bash dans le conteneur du pod:
 
 
-```console
+```shell
 $ kubectl exec -ti $POD_NAME bash
 root@kubernetes-bootcamp-765bf4c7b4-qnsrl:/#
 ```
 
 Nous avons maintenant une console ouverte sur le conteneur où nous exécutons notre application NodeJS. Le code source de l'application se trouve dans le fichier server.js:
 
-```console
+```shell
 root@kubernetes-bootcamp-765bf4c7b4-qnsrl:/# cat server.js
 var http = require('http');
 var requests=0;
@@ -462,7 +462,7 @@ $
 
 ```
 
-```console
+```shell
 root@kubernetes-bootcamp-765bf4c7b4-qnsrl:/# curl localhost:8080
 Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-qnsrl | v=1
 ```
