@@ -20,7 +20,7 @@ Il y a différentes techniques de virtualisation mais qui peuvent être complém
 
 
 * Isolateurs(conteneurs)
-![isolateur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiIsolateur.png)
+![isolateur](./Diagramme_ArchiIsolateur.png)
 Avantages des conteneurs:
 
 une très forte densité: on peut déployer beaucoup plus de conteneurs que de machines virtuelles. Par exemple j'ai pû déployer 200 réplications d'un conteneur docker basé sur une image nginx, en 10 secondes, pourtant sur un laptop peu puissant (core i3 dualcore et 6 Go de RAM).
@@ -40,13 +40,13 @@ Cependant, on ne peut pas vraiment parler de virtualisation de système d'exploi
 La principale différence entre un conteneur et une machine virtuelle est que le conteneur **utilise le noyau de l'hôte**, ils sont donc très légers et très faciles  et rapides à déployer/détruire/redéployer.
 
 * Les hyperviseurs de type 2
-![emulateur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiEmulateur.png)
+![emulateur](./Diagramme_ArchiEmulateur.png)
 Utile pour les développeurs et les testeurs, en formation ou pour découvrir de nouveaux OS. Cette solution isole bien les OS invités mais les performances sont bien moindres que dans le cas des hyperviseurs de type 1, car dans le type 2, l'hyperviseur est un programme lourd qui tourne sur l'OS de l'hôte.
 
 **Exemples**: VMware Fusion/Workstation, VirtualBox, QEMU, ...
 
 * Les hyperviseurs de type 1
-![hyperviseur](/home/ulysse/Documents/acensi/poc/Diagramme_ArchiHyperviseur.png)
+![hyperviseur](./Diagramme_ArchiHyperviseur.png)
 C'est la solution adoptée en entreprise. L'hyperviseur de type 1 est un noyau système (Linux) très léger (juste avec une busybox) et optimisé pour gérer les accès des noyaux d'OS invités à l'architecture sous-jacente.
 Inconvénient: plus onéreux.
 
@@ -278,7 +278,7 @@ Commandes principales de Kubectl
 
 Un pod est un groupe d'un ou plusieurs conteneurs d'applications (tels que Docker) et comprend un stockage partagé (volumes), une adresse IP et des informations sur la façon de les exécuter.
 
-![pod](./pods.png)
+![pod](./pods.PNG)
 
 Noeuds
 
@@ -490,15 +490,15 @@ Using a Service to Expose Your App
 ********************************************************************************
 
 
-![service](/home/ulysse/Documents/acensi/poc/intro_k8s/service.png)
+![service](./service.png)
 
 
 ********************************************************************************
 Scale your app
 ********************************************************************************
 
-![scaling1](/home/ulysse/Documents/acensi/poc/intro_k8s/scaling1.png)
-![scaling2](/home/ulysse/Documents/acensi/poc/intro_k8s/scaling2.png)
+![scaling1](./scaling1.png)
+![scaling2](./scaling2.png)
 ********************************************************************************
 update your app
 ********************************************************************************
