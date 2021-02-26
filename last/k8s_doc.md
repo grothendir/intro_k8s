@@ -512,6 +512,7 @@ Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-qnsrl | 
 
 ## 4. Gestion des réseaux de conteneurs
 ### 4.1 Linux Network Namespace
+#### 4.1.1 La notion de namespace réseau
 
 La suite iproute2 est une collection d'utilitaires réseaux et de contrôle
 de trafic.
@@ -548,13 +549,15 @@ C'est exactement le principe des conteneurs.
 
 L'idée des Network Namespace est d'isoler de façon virtuelle et au niveau du noyau des interfaces virtuelles ayant leur propre routes, règles de firewall, etc, et de les faire communiquer entre eux. C'est la base du réseau de conteneur, et c'est ce que réalise Kubernetes à grande echelle.
 
-## Exemple le plus simple: faire communiquer deux namespaces via un commutateur virtuel.
+### 4.2 Exemple le plus simple: faire communiquer deux namespaces via un commutateur virtuel.
 
 La situation est la suivante: on a un linux usuel avec ses interfaces réseau, et on va créer deux namespaces (qu'on appelera "red" et "green"), des interfaces, adresses ip et route pour chacun de ces namespaces et les faire communiquer entre eux. On verra que la commande `ip netns exec green <cmd>`permet d'éxecuter `<cmd>` dans le namespace green, de façon analogue à un docker exec.
 
 tutoriel vidéo disponible: https://www.youtube.com/watch?v=_WgUwUf1d34
 
 <img src="./ns.PNG" width="70%" height="70%" />
+
+#### 4.2.1 état du réseau actuel
 
 ip addr, ip link et ip route pour vérifier la configuration des couches 2 et 3:
 
@@ -634,6 +637,7 @@ default via 192.168.43.1 dev ens33 onlink
 192.168.49.0/24 dev br-164d5b19c7b9 proto kernel scope link src 192.168.49.1 linkdown
 root@debian101:~#
 ```
+#### 4.2.2 Création de deux namespaces
 
 On crée les deux namespace "red" et "green":
 
@@ -653,7 +657,7 @@ root@debian101:~# ls /var/run/netns/
 green  red
 root@debian101:~#
 
-On peut *éxécuter* la commande ip link *à l'intérieur des namespaces*:
+On peut **éxécuter** la commande ip link **à l'intérieur des namespaces**:
 
 ```shell
 root@debian101:~# ip netns exec red ip link
@@ -666,19 +670,18 @@ Pareil pour "green":
 root@debian101:~# ip netns exec green ip link
 1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+
+
+
 ```
+4.2.3 Openvswitch
+
 Installation d'openvswitch:    
 ```shell    
 root@debian101:~# apt install openvswitch-{common,switch}
 ```
 <img src="./ns2.PNG" width="70%" height="70%" />
 
-
-On voit que les deux namespace ont chacun une interface de loopback. Rajoutons leur une interface virtuelle:
-
-```shell
-```
-<img src="./ns3.PNG" width="70%" height="70%" />
 
 Création d'un pont qu'on nomme `ovs1`:
 ```shell
@@ -692,5 +695,214 @@ type: internal
 ovs_version: "2.10.7"
 ```
 
+4.2.4 Plomberie
 
+On voit que les deux namespace ont chacun une interface de loopback. Rajoutons leur une interface virtuelle:
+
+
+```shell
+root@debian101:~# ip link add eth0-r type veth peer name veth-r
+root@debian101:~# ip link show eth0-r
+17: eth0-r@veth-r: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 8a:53:95:cd:3c:91 brd ff:ff:ff:ff:ff:ff
+    root@debian101:~# ip link show veth-r
+    16: veth-r@eth0-r: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+        link/ether 0a:60:c7:af:4c:ad brd ff:ff:ff:ff:ff:ff
+```
+<img src="./ns3.PNG" width="70%" height="70%" />
+
+
+Ensuite on attache l'interface eth0-r au namespace red:
+
+```shell
+root@debian101:~# ip link set eth0-r netns red
+```
+
+On voit que l'interface eth0-r a disparu du root namespace: 
+```shell
+root@debian101:~# ip link|grep eth0-r
+root@debian101:~#
+```
+pour arriver comme voulu dans le namespace "red", réseau isolé du root namespace:
+```shell
+root@debian101:~# ip netns exec red ip link
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    17: eth0-r@if16: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+        link/ether 8a:53:95:cd:3c:91 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+	```
+Maintenant connectons l'autre bout du pipe à ovs:
+```shell
+root@debian101:~# ovs-vsctl add-port ovs1 veth-r
+```
+
+On vérifie que veth-r est bien connectée à ovs1:
+```shell
+root@debian101:~# ovs-vsctl show
+139260bd-d442-4341-a2bb-12f85cdfe54e
+Bridge "ovs1"
+Port veth-r
+Interface veth-r
+Port "ovs1"
+Interface "ovs1"
+type: internal
+ovs_version: "2.10.7"
+```
+
+C'est bon, on a un pipe de communication entre le namespace red et le commutateur virtuel.
+
+<img src="./ns4.PNG" width="70%" height="70%" />
+
+On fait de même pour le namespace "green":
+
+```shell
+root@debian101:~# ip link add eth0-g type veth peer name veth-g
+```
+Vérification:
+```shell
+root@debian101:~# ip link|grep ".*-g"
+20: veth-g@eth0-g: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+21: eth0-g@veth-g: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+```
+
+Comme pour "red", on attache eth0-g au namespace "green":
+```shell
+root@debian101:~# ip link set eth0-g netns green
+```
+
+On connecte l'autre bout du pipe à ovs1:
+```shell
+root@debian101:~# ovs-vsctl add-port ovs1 veth-g
+```
+
+Vérification: les deux pipes sont bien connectés:
+```shell
+root@debian101:~# ovs-vsctl show
+139260bd-d442-4341-a2bb-12f85cdfe54e
+Bridge "ovs1"
+Port veth-r
+Interface veth-r
+Port veth-g
+Interface veth-g
+Port "ovs1"
+Interface "ovs1"
+type: internal
+ovs_version: "2.10.7"
+```
+Donc nous sommes dans la configuration suivante, il ne manque plus qu'à attribuer des ip, masques de sous-réseau et routes pour avoir un réseau fonctionnel entre les deux namespaces
+<img src="./ns5.PNG" width="70%" height="70%" />
+
+
+4.2.5 Ajout d'addresse ip et de route pour les interfaces eth0-r et eth0-g
+Tout d'abord on active l'interface (veth-r pour l'instant, ce sera pareil pour veth-g) sur le switch virtuel:
+```shell
+root@debian101:~# ip link set veth-r up
+```
+Vérification:
+```shell
+root@debian101:~# ip link show veth-r
+16: veth-r@if17: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue master ovs-system state LOWERLAYERDOWN mode DEFAULT group default qlen 1000
+    link/ether 0a:60:c7:af:4c:ad brd ff:ff:ff:ff:ff:ff link-netns red
+    ```
+
+et maintenant, il nous faut exécuter les commandes **dans** le namespace "red" pour activer l'interface de loopback et eth0-r, puis créer l'IP et la route:
+```shell
+root@debian101:~# ip netns exec red ip link set lo up
+root@debian101:~# ip netns exec red ip link set eth0-r up
+root@debian101:~# ip netns exec red ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+inet 127.0.0.1/8 scope host lo
+valid_lft forever preferred_lft forever
+inet6 ::1/128 scope host
+valid_lft forever preferred_lft forever
+17: eth0-r@if16: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+link/ether 8a:53:95:cd:3c:91 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+inet 10.0.0.1/24 scope global eth0-r
+valid_lft forever preferred_lft forever
+inet6 fe80::8853:95ff:fecd:3c91/64 scope link
+valid_lft forever preferred_lft forever
+```
+Si on regarde la route dans le namespace red, on se rend compte que le réseau du root namespace n'a aucune conscience du réseau 10.0.0.0: on a bien une **isolation** des namespaces:
+
+```shell
+root@debian101:~# ip netns exec red ip route
+10.0.0.0/24 dev eth0-r proto kernel scope link src 10.0.0.1
+root@debian101:~# ip route
+default via 192.168.43.1 dev ens33 onlink
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
+172.18.0.0/16 dev br-e6e3c03edb14 proto kernel scope link src 172.18.0.1 linkdown
+172.19.0.0/16 dev br-6be593cea93c proto kernel scope link src 172.19.0.1 linkdown
+172.20.0.0/16 dev docker_gwbridge proto kernel scope link src 172.20.0.1
+192.168.43.0/24 dev ens33 proto kernel scope link src 192.168.43.99
+192.168.49.0/24 dev br-164d5b19c7b9 proto kernel scope link src 192.168.49.1 linkdown
+```
+
+Il ne reste plus qu'à effectuer la même chose avec "green":
+```shell
+root@debian101:~# ip link set veth-g up
+```
+
+sauf que contrairement à "red", on va procéder autrement: on va prendre un raccourci. Au lieu d'écrire ip netns exec green <commandes>, on va directement *entrer* dans le namespace green en éxécutant ip netns exec green bash, et on pourra faire toutes les commandes précédentes depuis l'intérieur du namespace, pas de l'extérieur comme on l'a fait pour "red":
+Tout d'abord, pour bien détailler ce qu'il se passe, on teste
+```shell
+root@debian101:~# echo $SHLVL
+1
+root@debian101:~# ip netns exec green bash
+root@debian101:~# echo $SHLVL
+2
+root@debian101:~# exit
+exit
+root@debian101:~# echo $SHLVL
+1
+```
+On peut bien entrer dans le namespace (on voit l'analogie avec les conteneurs)
+
+à l'intérieur du namespace "green", on peut utiliser les commandes ip classiques:
+```shell
+root@debian101:~# ip link set eth0-g up
+root@debian101:~# ip addr add 10.0.0.2/24 dev eth0-g
+root@debian101:~# ip addr
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+21: eth0-g@if20: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+link/ether 52:39:3c:9a:7c:c9 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+inet 10.0.0.2/24 scope global eth0-g
+valid_lft forever preferred_lft forever
+inet6 fe80::5039:3cff:fe9a:7cc9/64 scope link
+valid_lft forever preferred_lft forever
+root@debian101:~# exit
+exit
+```
+
+<img src="./ns6.PNG" width="70%" height="70%" />
+
+Maintenant que les réseaux namespace red et green sont en place, on peut tester la connectivité entre les deux avec ping:
+```shell
+root@debian101:~# ip netns exec red bash
+root@debian101:~# ping 10.0.0.2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=0.553 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=0.072 ms
+64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=0.058 ms
+64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=0.074 ms
+^C
+--- 10.0.0.2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 12ms
+rtt min/avg/max/mdev = 0.058/0.189/0.553/0.210 ms
+root@debian101:~# exit
+exit
+root@debian101:~# ip netns exec green bash
+root@debian101:~# ping 10.0.0.1
+PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
+64 bytes from 10.0.0.1: icmp_seq=1 ttl=64 time=0.423 ms
+64 bytes from 10.0.0.1: icmp_seq=2 ttl=64 time=0.063 ms
+64 bytes from 10.0.0.1: icmp_seq=3 ttl=64 time=0.060 ms
+64 bytes from 10.0.0.1: icmp_seq=4 ttl=64 time=0.088 ms
+^C
+--- 10.0.0.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 38ms
+rtt min/avg/max/mdev = 0.060/0.158/0.423/0.153 ms
+```
+ça marche!
 
