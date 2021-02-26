@@ -507,3 +507,188 @@ Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-qnsrl | 
 ********************************************************************************
 #### 3.3.6  Mettre à jour une application
 ********************************************************************************
+
+
+
+## 4. Gestion des réseaux de conteneurs
+### 4.1 Linux Network Namespace
+
+La suite iproute2 est une collection d'utilitaires réseaux et de contrôle
+de trafic.
+Ces outils communiquent avec le noyau Linux via l'interface (rt)netlink,
+fournissant des fonctionnalités inaccessibles par les
+commandes « ifconfig » et « route » héritées de net-tools.
+
+Les options `addr` `route` ou `link` pour respectivement afficher les informations IP, gérer les routes et les interfaces sont généralement les plus utilisées.
+Ce qu'on va voir est l'option `netns` qui permet de créer et d'utiliser des *network namespaces*.
+Quel est le rapport avec les conteneurs et Kubernetes? Regardons ce que dit la page de manuel de ip-netns:
+
+** network namespace is logically another copy of the network stack, with its own routes, firewall rules, and network devices.
+
+By default a process inherits its network namespace from its parent. Initially all the processes share the same default network namespace from the init process.
+
+By convention a named network namespace is an object at /var/run/netns/NAME that can be opened. The file descriptor resulting from opening /var/run/netns/NAME
+refers to the specified network namespace. Holding that file descriptor open keeps the network namespace alive. The file descriptor can be used with the
+setns(2) system call to change the network namespace associated with a task.
+
+For applications that are aware of network namespaces, the convention is to look for global network configuration files first in /etc/netns/NAME/ then in /etc/.
+For example, if you want a different version of /etc/resolv.conf for a network namespace used to isolate your vpn you would name it /etc/netns/myvpn/re‐
+solv.conf.
+
+ip netns exec automates handling of this configuration, file convention for network namespace unaware applications, by creating a mount namespace and bind
+mounting all of the per network namespace configure files into their traditional location in /etc.**
+
+D'autre part, la page wikipedia de Linux Namespace nous dit:
+
+** Namespaces are a feature of the Linux kernel that partitions kernel resources such that one set of processes sees one set of resources while another set of processes sees a different set of resources. The feature works by having the same namespace for a set of resources and processes, but those namespaces refer to distinct resources. Resources may exist in multiple spaces. Examples of such resources are process IDs, hostnames, user IDs, file names, and some names associated with network access, and interprocess communication. **
+
+C'est exactement le principe des conteneurs.
+
+** Namespaces are a fundamental aspect of containers on Linux.  **
+
+L'idée des Network Namespace est d'isoler de façon virtuelle et au niveau du noyau des interfaces virtuelles ayant leur propre routes, règles de firewall, etc, et de les faire communiquer entre eux. C'est la base du réseau de conteneur, et c'est ce que réalise Kubernetes à grande echelle.
+
+## Exemple le plus simple: faire communiquer deux namespaces via un commutateur virtuel.
+
+La situation est la suivante: on a un linux usuel avec ses interfaces réseau, et on va créer deux namespaces (qu'on appelera "red" et "green"), des interfaces, adresses ip et route pour chacun de ces namespaces et les faire communiquer entre eux. On verra que la commande `ip netns exec green <cmd>`permet d'éxecuter `<cmd>` dans le namespace green, de façon analogue à un docker exec.
+
+tutoriel vidéo disponible: https://www.youtube.com/watch?v=_WgUwUf1d34
+
+ip addr, ip link et ip route pour vérifier la configuration des couches 2 et 3:
+
+```shell
+
+root@debian101:~# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+inet 127.0.0.1/8 scope host lo
+valid_lft forever preferred_lft forever
+inet6 ::1/128 scope host
+valid_lft forever preferred_lft forever
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+link/ether 00:0c:29:93:ce:33 brd ff:ff:ff:ff:ff:ff
+inet 192.168.43.99/24 brd 192.168.43.255 scope global ens33
+valid_lft forever preferred_lft forever
+inet6 fe80::20c:29ff:fe93:ce33/64 scope link
+valid_lft forever preferred_lft forever
+3: br-e6e3c03edb14: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+link/ether 02:42:27:f6:30:1d brd ff:ff:ff:ff:ff:ff
+inet 172.18.0.1/16 brd 172.18.255.255 scope global br-e6e3c03edb14
+valid_lft forever preferred_lft forever
+4: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+link/ether 02:42:57:99:bf:bd brd ff:ff:ff:ff:ff:ff
+inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+valid_lft forever preferred_lft forever
+inet6 fe80::42:57ff:fe99:bfbd/64 scope link
+valid_lft forever preferred_lft forever
+5: br-164d5b19c7b9: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+link/ether 02:42:78:72:53:18 brd ff:ff:ff:ff:ff:ff
+inet 192.168.49.1/24 brd 192.168.49.255 scope global br-164d5b19c7b9
+valid_lft forever preferred_lft forever
+6: br-6be593cea93c: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+link/ether 02:42:a8:c9:3a:3e brd ff:ff:ff:ff:ff:ff
+inet 172.19.0.1/16 brd 172.19.255.255 scope global br-6be593cea93c
+valid_lft forever preferred_lft forever
+7: docker_gwbridge: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+link/ether 02:42:fd:37:4a:88 brd ff:ff:ff:ff:ff:ff
+inet 172.20.0.1/16 brd 172.20.255.255 scope global docker_gwbridge
+valid_lft forever preferred_lft forever
+inet6 fe80::42:fdff:fe37:4a88/64 scope link
+valid_lft forever preferred_lft forever
+9: veth201ba9f@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default
+link/ether 16:77:c7:83:d2:af brd ff:ff:ff:ff:ff:ff link-netnsid 0
+inet6 fe80::1477:c7ff:fe83:d2af/64 scope link
+valid_lft forever preferred_lft forever
+15: veth05815bb@if14: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker_gwbridge state UP group default
+link/ether ca:7d:98:3f:68:f8 brd ff:ff:ff:ff:ff:ff link-netnsid 2
+inet6 fe80::c87d:98ff:fe3f:68f8/64 scope link
+valid_lft forever preferred_lft forever
+root@debian101:~# ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+link/ether 00:0c:29:93:ce:33 brd ff:ff:ff:ff:ff:ff
+3: br-e6e3c03edb14: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default
+link/ether 02:42:27:f6:30:1d brd ff:ff:ff:ff:ff:ff
+4: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+link/ether 02:42:57:99:bf:bd brd ff:ff:ff:ff:ff:ff
+5: br-164d5b19c7b9: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default
+link/ether 02:42:78:72:53:18 brd ff:ff:ff:ff:ff:ff
+6: br-6be593cea93c: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default
+link/ether 02:42:a8:c9:3a:3e brd ff:ff:ff:ff:ff:ff
+7: docker_gwbridge: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+link/ether 02:42:fd:37:4a:88 brd ff:ff:ff:ff:ff:ff
+9: veth201ba9f@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default
+link/ether 16:77:c7:83:d2:af brd ff:ff:ff:ff:ff:ff link-netnsid 0
+15: veth05815bb@if14: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker_gwbridge state UP mode DEFAULT group default
+link/ether ca:7d:98:3f:68:f8 brd ff:ff:ff:ff:ff:ff link-netnsid 2
+root@debian101:~# ip route
+default via 192.168.43.1 dev ens33 onlink
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
+172.18.0.0/16 dev br-e6e3c03edb14 proto kernel scope link src 172.18.0.1 linkdown
+172.19.0.0/16 dev br-6be593cea93c proto kernel scope link src 172.19.0.1 linkdown
+172.20.0.0/16 dev docker_gwbridge proto kernel scope link src 172.20.0.1
+192.168.43.0/24 dev ens33 proto kernel scope link src 192.168.43.99
+192.168.49.0/24 dev br-164d5b19c7b9 proto kernel scope link src 192.168.49.1 linkdown
+root@debian101:~#
+```
+
+On crée les deux namespace "red" et "green":
+
+```shell
+root@debian101:~# ip netns
+root@debian101:~# ip netns add red
+root@debian101:~# ip netns add green
+root@debian101:~# ip netns
+green
+red
+```
+
+
+<img src="./ns1.png" width="70%" height="70%" />
+
+root@debian101:~# ls /var/run/netns/
+green  red
+root@debian101:~#
+
+On peut *éxécuter* la commande ip link *à l'intérieur des namespaces*:
+
+```shell
+root@debian101:~# ip netns exec red ip link
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```
+
+Pareil pour "green":
+```shell
+root@debian101:~# ip netns exec green ip link
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```
+
+On voit que les deux namespace ont chacun une interface de loopback. Rajoutons leur une interface virtuelle:
+
+```shell
+```
+<img src="./ns3.png" width="70%" height="70%" />
+
+Installation d'openvswitch:    
+```shell    
+root@debian101:~# apt install openvswitch-{common,switch}
+```
+<img src="./ns2.png" width="70%" height="70%" />
+
+Création d'un pont qu'on nomme `ovs1`:
+```shell
+root@debian101:~# ovs-vsctl add-br ovs1
+root@debian101:~# ovs-vsctl show
+139260bd-d442-4341-a2bb-12f85cdfe54e
+Bridge "ovs1"
+Port "ovs1"
+Interface "ovs1"
+type: internal
+ovs_version: "2.10.7"
+```
+
+
+
