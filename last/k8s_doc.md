@@ -883,9 +883,11 @@ exit
 ```
 
 <img src="./ns6.PNG" width="70%" height="70%" />
+
 ********************************************************************************
-4.2.6 Test de connectivité
+#### 4.2.6 Test de connectivité
 ********************************************************************************
+
 Maintenant que les réseaux namespace red et green sont en place, on peut tester la connectivité entre les deux avec ping:
 
 ```shell
