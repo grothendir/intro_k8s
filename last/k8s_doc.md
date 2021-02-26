@@ -921,3 +921,8 @@ rtt min/avg/max/mdev = 0.060/0.158/0.423/0.153 ms
 ```
 ça marche!
 
+Deux vidéos pour aller plus loin:
+
+https://www.youtube.com/watch?v=6v_BDHIgOY8 Container Networking From Scratch - Kristen Jacobs, Oracle
+
+https://www.youtube.com/watch?v=Utf-A4rODH8 Building a container from scratch in Go - Liz Rice (Microscaling Systems)
