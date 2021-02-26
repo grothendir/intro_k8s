@@ -536,15 +536,15 @@ For example, if you want a different version of /etc/resolv.conf for a network n
 solv.conf.
 
 ip netns exec automates handling of this configuration, file convention for network namespace unaware applications, by creating a mount namespace and bind
-mounting all of the per network namespace configure files into their traditional location in /etc.**
+mounting all of the per network namespace configure files into their traditional location in /etc. **
 
 D'autre part, la page wikipedia de Linux Namespace nous dit:
 
-** Namespaces are a feature of the Linux kernel that partitions kernel resources such that one set of processes sees one set of resources while another set of processes sees a different set of resources. The feature works by having the same namespace for a set of resources and processes, but those namespaces refer to distinct resources. Resources may exist in multiple spaces. Examples of such resources are process IDs, hostnames, user IDs, file names, and some names associated with network access, and interprocess communication. **
+" Namespaces are a feature of the Linux kernel that partitions kernel resources such that **one set of processes sees one set of resources while another set of processes sees a different set of resources**. The feature works by having the same namespace for a set of resources and processes, but those namespaces refer to distinct resources. Resources may exist in multiple spaces. Examples of such resources are process IDs, hostnames, user IDs, file names, and some names associated with network access, and interprocess communication. "
 
 C'est exactement le principe des conteneurs.
 
-** Namespaces are a fundamental aspect of containers on Linux.  **
+" Namespaces are a fundamental aspect of containers on Linux. " 
 
 L'idée des Network Namespace est d'isoler de façon virtuelle et au niveau du noyau des interfaces virtuelles ayant leur propre routes, règles de firewall, etc, et de les faire communiquer entre eux. C'est la base du réseau de conteneur, et c'est ce que réalise Kubernetes à grande echelle.
 
@@ -645,7 +645,7 @@ red
 ```
 
 
-<img src="./ns1.png" width="70%" height="70%" />
+<img src="./ns1.PNG" width="70%" height="70%" />
 
 root@debian101:~# ls /var/run/netns/
 green  red
