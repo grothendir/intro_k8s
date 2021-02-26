@@ -557,8 +557,10 @@ tutoriel vidéo disponible: https://www.youtube.com/watch?v=_WgUwUf1d34
 
 <img src="./ns.PNG" width="70%" height="70%" />
 
-#### 4.2.1 état du réseau actuel
 
+********************************************************************************
+#### 4.2.1 état du réseau actuel
+********************************************************************************
 ip addr, ip link et ip route pour vérifier la configuration des couches 2 et 3:
 
 ```shell
@@ -637,8 +639,9 @@ default via 192.168.43.1 dev ens33 onlink
 192.168.49.0/24 dev br-164d5b19c7b9 proto kernel scope link src 192.168.49.1 linkdown
 root@debian101:~#
 ```
+********************************************************************************
 #### 4.2.2 Création de deux namespaces
-
+********************************************************************************
 On crée les deux namespace "red" et "green":
 
 ```shell
@@ -674,8 +677,9 @@ root@debian101:~# ip netns exec green ip link
 
 
 ```
-4.2.3 Openvswitch
-
+********************************************************************************
+#### 4.2.3 Openvswitch
+********************************************************************************
 Installation d'openvswitch:    
 ```shell    
 root@debian101:~# apt install openvswitch-{common,switch}
@@ -695,7 +699,9 @@ type: internal
 ovs_version: "2.10.7"
 ```
 
+********************************************************************************
 4.2.4 Plomberie
+********************************************************************************
 
 On voit que les deux namespace ont chacun une interface de loopback. Rajoutons leur une interface virtuelle:
 
@@ -792,8 +798,9 @@ ovs_version: "2.10.7"
 Donc nous sommes dans la configuration suivante, il ne manque plus qu'à attribuer des ip, masques de sous-réseau et routes pour avoir un réseau fonctionnel entre les deux namespaces
 <img src="./ns5.PNG" width="70%" height="70%" />
 
-
+********************************************************************************
 4.2.5 Ajout d'addresse ip et de route pour les interfaces eth0-r et eth0-g
+********************************************************************************
 Tout d'abord on active l'interface (veth-r pour l'instant, ce sera pareil pour veth-g) sur le switch virtuel:
 ```shell
 root@debian101:~# ip link set veth-r up
@@ -876,7 +883,9 @@ exit
 ```
 
 <img src="./ns6.PNG" width="70%" height="70%" />
-
+********************************************************************************
+4.2.6 Test de connectivité
+********************************************************************************
 Maintenant que les réseaux namespace red et green sont en place, on peut tester la connectivité entre les deux avec ping:
 ```shell
 root@debian101:~# ip netns exec red bash
