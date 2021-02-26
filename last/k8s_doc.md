@@ -887,6 +887,7 @@ exit
 4.2.6 Test de connectivité
 ********************************************************************************
 Maintenant que les réseaux namespace red et green sont en place, on peut tester la connectivité entre les deux avec ping:
+
 ```shell
 root@debian101:~# ip netns exec red bash
 root@debian101:~# ping 10.0.0.2
