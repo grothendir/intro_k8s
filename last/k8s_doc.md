@@ -510,7 +510,10 @@ Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-qnsrl | 
 
 
 
-## 4. Gestion des réseaux de conteneurs
+## 4. Gestion du réseau dans Kubernetes
+
+On aborde la partie réseau de kubernetes: comment les pods communiquent entre eux et avec l'extérieur. Je pense qu'une manière d'aborder le sujet est de parler de l'architecture réseau des conteneurs via la notion fondamentale de namespace.
+
 ### 4.1 Linux Network Namespace
 #### 4.1.1 La notion de namespace réseau
 
