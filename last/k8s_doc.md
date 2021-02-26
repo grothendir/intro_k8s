@@ -670,13 +670,13 @@ On voit que les deux namespace ont chacun une interface de loopback. Rajoutons l
 
 ```shell
 ```
-<img src="./ns3.png" width="70%" height="70%" />
+<img src="./ns3.PNG" width="70%" height="70%" />
 
 Installation d'openvswitch:    
 ```shell    
 root@debian101:~# apt install openvswitch-{common,switch}
 ```
-<img src="./ns2.png" width="70%" height="70%" />
+<img src="./ns2.PNG" width="70%" height="70%" />
 
 Création d'un pont qu'on nomme `ovs1`:
 ```shell
