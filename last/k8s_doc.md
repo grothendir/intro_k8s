@@ -554,6 +554,8 @@ La situation est la suivante: on a un linux usuel avec ses interfaces réseau, e
 
 tutoriel vidéo disponible: https://www.youtube.com/watch?v=_WgUwUf1d34
 
+<img src="./ns.PNG" width="70%" height="70%" />
+
 ip addr, ip link et ip route pour vérifier la configuration des couches 2 et 3:
 
 ```shell
@@ -665,18 +667,18 @@ root@debian101:~# ip netns exec green ip link
 1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 ```
+Installation d'openvswitch:    
+```shell    
+root@debian101:~# apt install openvswitch-{common,switch}
+```
+<img src="./ns2.PNG" width="70%" height="70%" />
+
 
 On voit que les deux namespace ont chacun une interface de loopback. Rajoutons leur une interface virtuelle:
 
 ```shell
 ```
 <img src="./ns3.PNG" width="70%" height="70%" />
-
-Installation d'openvswitch:    
-```shell    
-root@debian101:~# apt install openvswitch-{common,switch}
-```
-<img src="./ns2.PNG" width="70%" height="70%" />
 
 Création d'un pont qu'on nomme `ovs1`:
 ```shell
